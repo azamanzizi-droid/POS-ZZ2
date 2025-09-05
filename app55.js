@@ -291,6 +291,75 @@ window.downloadReceipt = function(){
   // Ringkas – jika mahu penuh, boleh guna html() renderer (bergantung versi) atau autotable
   doc.save('resit.pdf');
 };
+window.printReceipt = function(){
+  const content = byId('receiptContent');
+  if (!content) return alert('Resit tidak ditemui');
+
+  // Buka tetingkap baru dengan saiz A7 (± 74x105 mm ≈ 280x400 px)
+  const w = window.open('', '_blank', 'width=280,height=400');
+  w.document.write(`
+    <html>
+      <head>
+        <title>Cetak Resit</title>
+        <style>
+          @page {
+            size: 74mm 105mm; /* Saiz A7 */
+            margin: 5mm;
+          }
+          body {
+            font-family: monospace, Arial, sans-serif;
+            font-size: 11px;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+          }
+          .receipt {
+            width: 100%;
+            margin: auto;
+          }
+          h3 {
+            margin: 0;
+            font-size: 13px;
+          }
+          .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+            font-size: 11px;
+          }
+          .receipt-table th,
+          .receipt-table td {
+            border-bottom: 1px dashed #000;
+            padding: 2px;
+            text-align: left;
+          }
+          .totals {
+            margin-top: 6px;
+            text-align: right;
+            font-weight: bold;
+          }
+          .footer {
+            margin-top: 10px;
+            font-size: 10px;
+            text-align: center;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="receipt">
+          ${content.innerHTML}
+          <div class="footer">Terima kasih kerana membeli!</div>
+        </div>
+        <script>
+          window.onload = function(){ window.print(); window.close(); }
+        </script>
+      </body>
+    </html>
+  `);
+  w.document.close();
+};
+
+
 
 /* Export PDF dari halaman Jualan (bakul semasa) */
 window.exportPDF = function(){
@@ -726,4 +795,3 @@ document.addEventListener('DOMContentLoaded', () => {
     initLaporanOnce();
   }
 });
-
