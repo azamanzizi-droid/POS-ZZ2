@@ -1,0 +1,668 @@
+<style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fb;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    /* Navigation for Mobile */
+    .nav {
+      background-color: #2c3e50;
+      color: white;
+      padding: 10px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .nav button {
+      padding: 15px 15px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 18px; /* Font size diperbesar */
+      transition: background 0.3s;
+      flex: 1 0 33%;
+      min-width: 120px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    
+    .nav button i {
+      margin-bottom: 8px;
+      font-size: 22px; /* Ikon diperbesar */
+    }
+    
+    .nav button:hover, .nav button.active {
+      background-color: #34495e;
+    }
+
+        .page-content {
+      padding: 20px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    #section-home, #section-produk, #section-jualan, #section-laporan, #section-vendor, #section-tetapan {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      width: 100%;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .msg {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+ font-size: 16px;
+    }
+     .welcome-header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 20px;
+      background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+      color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .welcome-header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    
+    .welcome-header h2 {
+      font-size: 22px;
+      font-weight: normal;
+    }
+    
+    .welcome-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      line-height: 1.8;
+      font-size: 17px;
+    }
+    
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      .container {
+        flex-direction: row;
+      }
+      
+      .nav {
+        width: 250px; /* Lebar sidebar diperbesar */
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+      }
+      
+      .nav button {
+        flex: none;
+        width: 100%;
+        text-align: left;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 18px 20px; /* Padding diperbesar */
+        font-size: 19px; /* Font size lebih besar untuk desktop */
+      }
+      
+      .nav button i {
+        margin-right: 15px;
+        margin-bottom: 0;
+        font-size: 24px; /* Ikon lebih besar untuk desktop */
+      }
+    }
+  @media (max-width: 480px) {
+      .nav button {
+        font-size: 16px; /* Sedikit lebih kecil untuk mobile sangat kecil */
+        padding: 12px 10px;
+      }
+      
+      .nav button i {
+        font-size: 20px;
+      }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    th {
+      background-color: #f8f9fa;
+      font-weight: bold;
+    }
+    
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+    
+    input, select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin: 5px 0;
+    }
+    
+    button {
+      padding: 12px 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    .product-form, .sales-form, .vendor-form {
+      background-color: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .product-form input, .vendor-form input {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    
+    .sales-form label {
+      display: inline-block;
+      margin-right: 10px;
+    }
+    
+    .basket-list {
+      list-style-type: none;
+      margin: 15px 0;
+    }
+    
+    .basket-list li {
+      background-color: white;
+      padding: 10px;
+      margin-bottom: 5px;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+   /* Sub Navigation untuk Laporan */
+    .subnav {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .subnav button {
+      padding: 15px 20px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 180px;
+      max-width: 220px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .bg-blue-500 { background-color: #3498db; }
+    .bg-blue-600 { background-color: #2980b9; }
+    .bg-gray-500 { background-color: #95a5a6; }
+    .text-white { color: white; }
+    .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .rounded { border-radius: 0.25rem; }
+    
+    .flex { display: flex; }
+    .justify-center { justify-content: center; }
+    .items-center { align-items: center; }
+    .min-h-screen { min-height: 100vh; }
+    .bg-white { background-color: white; }
+    .rounded-lg { border-radius: 0.5rem; }
+    .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+    .p-8 { padding: 2rem; }
+    .text-center { text-align: center; }
+    .max-w-sm { max-width: 24rem; }
+    .w-full { width: 100%; }
+    .text-xl { font-size: 1.25rem; }
+    .font-bold { font-weight: 700; }
+    .text-blue-700 { color: #2b6cb0; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .gap-3 { gap: 0.75rem; }
+    
+    .filter-form {
+      background-color: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .filter-form label {
+      display: flex;
+      flex-direction: column;
+      font-weight: bold;
+    }
+    
+    /* Modal Resit - Diperbaiki */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .modal-content {
+      background-color: white;
+      width: 320px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    
+    .close-button {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #777;
+    }
+    
+    .receipt-item {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px dashed #eee;
+    }
+    
+    .receipt-total {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 2px solid #ddd;
+      font-weight: bold;
+    }
+    
+    .modal-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      gap: 10px;
+    }
+    
+    .modal-footer button {
+      flex: 1;
+    }
+    
+    .btn-download {
+      background-color: #27ae60;
+    }
+    
+    .btn-download:hover {
+      background-color: #219653;
+    }
+ 
+.sidebar {
+  background-color: #2c3e50;  /* warna biru gelap */
+  color: white;
+  width: 220px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* supaya nama syarikat duduk bawah */
+}
+
+.menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu li {
+  padding: 20px;
+  cursor: pointer;
+}
+
+.menu li:hover {
+  background-color: #34495e;
+}
+
+/* Nama syarikat */
+.company-name {
+  text-align: center;
+  padding: 20px;
+  font-weight: bold;
+  font-size: 30px;
+  border-top: 1px solid #46637f; /* garis pemisah atas */
+}
+ .page-content {
+      padding: 20px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+ * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fb;
+      color: #333;
+      line-height: 1.6;
+      font-size: 16px;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      width: 100%;
+    }
+    
+    /* Navigation for Mobile */
+    .nav {
+      background-color: #2c3e50;
+      color: white;
+      padding: 10px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+    
+    .nav button {
+      padding: 15px 15px;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+      flex: 1 0 33%;
+      min-width: 120px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .nav button i {
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+    
+    .nav button:hover, .nav button.active {
+      background-color: #34495e;
+    }
+    
+    .page-content {
+      padding: 20px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .settings-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    .settings-header {
+      text-align: center;
+      margin-bottom: 10px;
+      padding: 15px;
+      background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+      color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .settings-header h1 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    
+    .settings-card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    
+    .settings-card h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: #2c3e50;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 10px;
+    }
+    
+    .settings-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .settings-btn {
+      padding: 16px;
+      background-color: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .settings-btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .settings-btn.delete {
+      background-color: #e74c3c;
+    }
+    
+    .settings-btn.delete:hover {
+      background-color: #c0392b;
+    }
+    
+    .confirmation-dialog {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .dialog-content {
+      background-color: white;
+      padding: 25px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+    }
+    
+    .dialog-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .dialog-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    
+    .dialog-btn.confirm {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    .dialog-btn.cancel {
+      background-color: #95a5a6;
+      color: white;
+    }
+    
+    /* Responsive adjustments */
+    @media (min-width: 768px) {
+      .container {
+        flex-direction: row;
+      }
+      
+      .nav {
+        width: 250px;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+      }
+      
+      .nav button {
+        flex: none;
+        width: 100%;
+        text-align: left;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 18px 20px;
+        font-size: 17px;
+      }
+      
+      .nav button i {
+        margin-right: 15px;
+        margin-bottom: 0;
+        font-size: 20px;
+      }
+      
+      .page-content {
+        flex: 1;
+        padding: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .nav button {
+        font-size: 14px;
+        padding: 12px 8px;
+      }
+      
+      .nav button i {
+        font-size: 18px;
+      }
+      
+      .settings-header h1 {
+        font-size: 22px;
+      }
+      
+      .settings-btn {
+        padding: 14px;
+        font-size: 15px;
+      }
+    }
+  </style>

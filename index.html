@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistem POS SPA</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="nav">
+      <button id="btnHome" onclick="showSection('home')" class="active"><i class="fa-solid fa-house"></i> Utama</button>
+      <button id="btnProduk" onclick="showSection('produk')"><i class="fa-solid fa-utensils"></i> Produk</button>
+      <button id="btnJualan" onclick="showSection('jualan')"><i class="fa-solid fa-cart-shopping"></i> Jualan</button>
+      <button id="btnLaporan" onclick="showSection('laporan')"><i class="fa-solid fa-chart-column"></i> Laporan</button>
+      <button id="btnVendor" onclick="showSection('vendor')"><i class="fa-solid fa-users"></i> Vendor</button>
+      <button id="btnSetting" onclick="showSection('tetapan')"><i class="fa-solid fa-wrench"></i> Tetapan</button>
+    </div>  
+ <!-- Halaman Utama -->
+    <div id="section-home">
+      <div class="welcome-header">
+        <h1>Zubaidajanai Enterprise</h1>
+        <h2>ZZ Point of Sale</h2>
+      </div>
+      
+      <div class="welcome-content">
+        <p>Selamat datang ke sistem POS ZZ!</p>
+        <p>Gunakan menu di atas untuk akses produk, jualan, laporan, dan vendor.</p>
+        <div class="msg">
+          Sistem ini direka khas untuk memudahkan urusan jualan dan pengurusan inventori perniagaan anda.
+        </div>
+        <p>Ciri utama sistem:</p>
+        <ul style="margin-left: 20px; margin-top: 10px;">
+          <li>Pengurusan produk dan stok</li>
+          <li>Proses jualan dan resit</li>
+          <li>Laporan jualan harian dan bulanan</li>
+          <li>Pengurusan vendor dan pembekal</li>
+          <li>Analisis pendapatan dan untung</li>
+        </ul>
+      </div>
+    </div>
+    <!-- Halaman Produk -->
+    <div id="section-produk" class="hidden">
+      <h1><i class="fa-solid fa-utensils"></i> Senarai Produk</h1>
+      <h3 style="margin-bottom:7px;">Tambah Produk Baru</h3>
+      <form id="productForm" class="product-form" autocomplete="off">
+        <input type="text" id="productCode" placeholder="Kod" required>
+        <input type="text" id="productName" placeholder="Nama" required>
+        <input type="number" id="productPrice" placeholder="Harga Jualan (RM)" step="01" min="0" required>
+        <input type="number" id="productVendorPrice" placeholder="Harga Vendor (RM)" step="0.01" min="0" required>
+        <input type="number" id="productCommission" placeholder="Komisen (RM)" step="0.01" min="0" required>
+        <input type="number" id="productStock" placeholder="Stok" min="0" required>
+        <button type="submit">Tambah Produk</button>
+      </form>
+      <table id="productTable">
+        <thead>
+          <tr>
+            <th>Kod</th>
+            <th>Nama</th>
+            <th>Harga Jualan (RM)</th>
+            <th>Harga Vendor (RM)</th>
+            <th>Komisen (RM)</th>
+            <th>Stok</th>
+            <th>Tindakan</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Halaman Jualan -->
+    <div id="section-jualan" class="hidden">
+      <h1><i class="fa-solid fa-cart-shopping"></i> Jualan</h1>
+      <form id="salesForm" class="sales-form" autocomplete="off">
+        <label>Pilih Produk:
+          <select id="salesProductSelect"></select>
+        </label>
+        <label>Kuantiti:
+          <input type="number" id="salesQty" value="1" min="1">
+        </label>
+        <button type="button" onclick="addToBasket()">Tambah ke Bakul</button>
+      </form>
+      <ul id="basketList" class="basket-list"></ul>
+      <table id="basketTable" style="margin-bottom:7px;">
+        <thead>
+          <tr>
+            <th>Produk</th>
+            <th>Kuantiti</th>
+            <th>Harga (RM)</th>
+            <th>Jumlah (RM)</th>
+            <th>Tindakan</th>
+          </tr>
+        </thead>
+        <tbody id="basketTableBody"></tbody>
+      </table>
+      <div>
+        <strong>Total: <span id="basketTotal">RM0.00</span></strong>
+      </div>
+      <form id="paymentForm" class="sales-form" autocomplete="off" style="margin-top:10px;">
+        <label>Bayaran Diterima (RM): <input type="number" id="paymentReceived" step="0.01" min="0"></label>
+        <button type="button" onclick="processPayment()" class="bg-blue-500 text-white px-3 py-1 rounded">Proses Bayaran</button>  
+        <button type="button" onclick="printPDF()" class="bg-blue-600 text-white px-3 py-1 rounded">📄 Export PDF</button>
+      </form>
+      <div id="saleMsg" class="msg"></div>
+    </div>
+
+    <!-- Modal Resit -->
+    <div id="receiptModal" class="hidden">
+      <div class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>Resit Pembayaran</h2>
+            <button class="close-button" onclick="closeReceipt()">&times;</button>
+          </div>
+          <div id="receiptContent"></div>
+          <div class="modal-footer">
+            <button onclick="closeReceipt()">Tutup</button>
+            <button onclick="downloadReceipt()" class="btn-download"><i class="fas fa-download"></i> Muat Turun Resit</button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Halaman Laporan -->
+    <div id="section-laporan" class="hidden">
+      <div class="subnav">
+       
+        <button id="btnLapHarian" onclick="showSubLaporan('harian')">Laporan Harian</button>
+        <button id="btnLapVendor" onclick="showSubLaporan('vendor')">Laporan Vendor</button>
+        <button id="btnLapStok" onclick="showSubLaporan('stok')">Baki Item Tidak Terjual</button>
+      </div>
+      
+      <div id="laporanPanelJualan"></div>
+      <div id="laporanPanelHarian" class="hidden">
+        <h2>Laporan Jualan Harian</h2>
+        <div class="filter-form">
+          <label>
+            Tarikh Mula:
+            <input type="date" id="startDate" required>
+          </label>
+          <label>
+            Tarikh Akhir:
+            <input type="date" id="endDate" required>
+          </label>
+          <button type="button" onclick="filterLaporanHarian()">Tapis</button>
+          <button type="button" onclick="exportHarianPDF()" class="bg-blue-600 text-white px-3 py-1 rounded">📄 Export PDF</button>
+        </div>
+        <div id="laporanHarianContent"></div>
+      </div>
+      <div id="laporanPanelVendor" class="hidden"></div>
+      <div id="laporanPanelStok" class="hidden"></div>
+    </div>
+
+    <!-- Halaman Vendor -->
+    <div id="section-vendor" class="hidden">
+      <h1><i class="fa-solid fa-users"></i> Vendor</h1>
+      <form id="vendorForm" class="vendor-form" autocomplete="off">
+        <input type="text" id="vendorName" placeholder="Nama Vendor" required>
+        <input type="text" id="vendorProduk" placeholder="Kod Produk" required>
+        <button type="submit">Tambah Vendor</button>
+      </form>
+      <table id="vendorTable">
+        <thead>
+          <tr>
+            <th>Nama Vendor</th>
+            <th>Kod Produk</th>
+            <th>Tindakan</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Halaman Setting -->
+    <div id="section-tetapan" class="hidden">
+ <div class="page-content">
+      <div class="settings-container">
+        <div class="settings-header">
+      <div class="flex justify-center items-center min-h-screen">
+        <div class="bg-white rounded-lg shadow-lg p-8 text-center max-w-sm w-full">
+          <h1 class="text-xl font-bold text-blue-700 mb-6">
+            <i class="fa-solid fa-wrench"></i> Tetapan
+          </h1>
+
+          <div class="subnav">
+
+           <div class="settings-card">
+               <h2>Pengurusan Data</h2>
+          <div class="settings-buttons">
+            <button class="settings-btn" onclick="showConfirmation('sales')">
+              <i class="fa-solid fa-receipt"></i> Clear Data Jualan
+            </button>
+            
+            <button class="settings-btn" onclick="showConfirmation('products')">
+              <i class="fa-solid fa-utensils"></i> Clear Data Produk
+            </button>
+            
+            <button class="settings-btn" onclick="showConfirmation('vendors')">
+              <i class="fa-solid fa-users"></i> Clear Data Vendor
+            </button>
+          </div>
+        </div>
+        
+        <div class="settings-card">
+          <h2>Tetapan Lanjutan</h2>
+          <div class="settings-buttons">
+            <button class="settings-btn delete" onclick="showConfirmation('all')">
+              <i class="fa-solid fa-trash"></i> Clear Semua Data
+            </button>
+            
+            <button class="settings-btn" onclick="exportAllData()">
+              <i class="fa-solid fa-download"></i> Backup Semua Data
+            </button>
+            
+            <button class="settings-btn" onclick="importData()">
+              <i class="fa-solid fa-upload"></i> Pulihkan Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dialog Pengesahan -->
+  <div class="confirmation-dialog" id="confirmationDialog">
+    <div class="dialog-content">
+      <h3 id="dialogTitle">Pengesahan Tindakan</h3>
+      <p id="dialogMessage">Adakah anda pasti ingin meneruskan tindakan ini?</p>
+      <div class="dialog-buttons">
+        <button class="dialog-btn cancel" onclick="hideConfirmation()">Batal</button>
+        <button class="dialog-btn confirm" onclick="confirmAction()">Ya, Teruskan</button>
+      </div>
+    </div>
+  </div>
+
+
+    <!-- Semua bahagian lain (home, produk, jualan, laporan, vendor, tetapan, modal) kekalkan sama macam kod anda -->
+    <!-- Saya tak ubah isi, hanya keluarkan script inline -->
+    
+
+
+  <!-- Script utama -->
+  <script src="app55.js"></script>
+</body>
+</html>
+
