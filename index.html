@@ -118,23 +118,23 @@
       <div id="saleMsg" class="msg"></div>
     </div>
 
-    <!-- Modal Resit -->
-    <div id="receiptModal" class="hidden">
-      <div class="modal-overlay">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h2>Resit Pembayaran</h2>
-            <button class="close-button" onclick="closeReceipt()">&times;</button>
-          </div>
-          <div id="receiptContent"></div>
-          <div class="modal-footer">
-            <button onclick="closeReceipt()">Tutup</button>
-            <button onclick="downloadReceipt()" class="btn-download"><i class="fas fa-download"></i> Muat Turun Resit</button>
-
-          </div>
-        </div>
+   <!-- Modal Resit -->
+<div id="receiptModal" class="hidden">
+  <div class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Resit Pembayaran</h2>
+        <button class="close-button" onclick="closeReceipt()">&times;</button>
+      </div>
+      <div id="receiptContent"></div>
+      <div class="modal-footer">
+        <button onclick="closeReceipt()">Tutup</button>
+        <button onclick="printReceipt()" class="btn-print"><i class="fas fa-print"></i> Cetak Resit</button>
       </div>
     </div>
+  </div>
+</div>
+
 
     <!-- Halaman Laporan -->
     <div id="section-laporan" class="hidden">
@@ -247,15 +247,7 @@
       </div>
     </div>
   </div>
-
-
-    <!-- Semua bahagian lain (home, produk, jualan, laporan, vendor, tetapan, modal) kekalkan sama macam kod anda -->
-    <!-- Saya tak ubah isi, hanya keluarkan script inline -->
-    
-
-
   <!-- Script utama -->
-  <script src="app55.js"></script>
+  <script src="app56.js"></script>
 </body>
 </html>
-
